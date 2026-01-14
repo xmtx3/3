@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小六爻掐指神通术</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;900&display=swap');
+        
+        body { 
+            background-color: #f4f7fa; 
+            color: #333;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* 顶部深色标题区 */
+        .top-banner {
+            background: #1a1a1a;
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: -40px;
+            z-index: 10;
+            position: relative;
+            width: 90%;
+        }
+
+        .gold-title {
+            background: linear-gradient(135deg, #e2b888 0%, #a67c52 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        /* 主白色卡片 */
+        .main-card {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 60px 24px 30px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            z-index: 5;
+        }
+
+        /* 现代感输入框 */
+        .input-box {
+            background: #f8f9fb !important;
+            border: 1px solid #eee !important;
+            border-radius: 18px !important;
+            height: 60px !important;
+            color: #333 !important;
+            font-size: 1.1rem !important;
+            font-weight: 600 !important;
+            text-align: center !important;
+            text-align-last: center !important;
+            appearance: none;
+            -webkit-appearance: none;
+            outline: none;
+            margin-top: 8px;
+        }
+
+        /* 蓝色主按钮 */
+        .btn-action {
+            background: #3b82f6;
+            color: white;
+            border-radius: 20px;
+            padding: 16px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-action:active {
+            transform: scale(0.97);
+            filter: brightness(0.9);
+        }
+
+        .result-sub-card {
+            background: #f8f9fb;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .step-val {
+            color: #3b82f6;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="w-full max-w-md px-4 py-8 flex flex-col items-center"> 
+        
+        <div class="top-banner">
+            <h1 class="gold-title">小六爻掐指神通术</h1>
+            <p class="text-[10px] text-zinc-500 tracking-[4px] mt-1">SPIRITUAL DIVINATION</p>
+        </div>
+
+        <div class="main-card">
+            <div class="text-center mb-6">
+                <div id="lunarInfo" class="text-sm text-zinc-400 font-medium"></div>
+                <div id="currentTime" class="text-xl font-bold text-slate-700 mt-1 tracking-wider"></div>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 mb-8">
+                <div class="text-center">
+                    <label class="text-[11px] text-zinc-400 mb-2 block font-bold">年</label>
+                    <input type="number" id="year" class="input-box w-full" value="2025">
+                </div>
+                <div class="text-center">
+                    <label class="text-[11px] text-zinc-400 mb-2 block font-bold">月</label>
+                    <select id="month" class="input-box w-full"></select>
+                </div>
+                <div class="text-center">
+                    <label class="text-[11px] text-zinc-400 mb-2 block font-bold">日</label>
+                    <select id="day" class="input-box w-full"></select>
+                </div>
+                <div class="text-center">
+                    <label class="text-[11px] text-zinc-400 mb-2 block font-bold">时</label>
+                    <select id="hour" class="input-box w-full"></select>
+                </div>
+            </div>
+
+            <button onclick="startDivination()" class="btn-action">
+                开启乾坤
+            </button>
+
+            <div id="resultArea" class="hidden">
+                <div class="mt-10 text-center">
+                    <div id="finalBadge" class="text-xs font-bold text-amber-600 bg-amber-50 inline-block px-3 py-1 rounded-full mb-2"></div>
+                    <div id="finalResultName" class="text-5xl font-black text-slate-800 my-4" style="font-family: 'Noto Serif SC', serif;">--</div>
+                    
+                    <div class="flex justify-around items-center py-4 border-y border-slate-100 mt-6">
+                        <div id="processSteps" class="flex w-full justify-around items-center"></div>
+                    </div>
+
+                    <div class="result-sub-card text-left">
+                        <p id="interpretation" class="text-sm leading-relaxed text-slate-500 italic"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="mt-8 text-[11px] text-zinc-400 tracking-widest text-center">
+            © 2025 玄学算法研究局 dy : 小茗同学
+        </p>
+    </div>
+
+    <script>
+        const gods = ["大安", "留连", "速喜", "赤口", "小吉", "空亡"];
+        const shichen = ["子时 23-01", "丑时 01-03", "寅时 03-05", "卯时 05-07", "辰时 07-09", "巳时 09-11", "午时 11-13", "未时 13-15", "申时 15-17", "酉时 17-19", "戌时 19-21", "亥时 21-23"];
+        const chineseNums = ["", "初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"];
+        
+        const infoMap = {
+            "大安": { badge: "大吉 · 顺遂", text: "大安事事昌，求谋在东方。失物去不远，宅舍保安康。" },
+            "留连": { badge: "中平 · 迟缓", text: "留连事难成，求谋日未明。官事只宜缓，去者未回程。" },
+            "速喜": { badge: "大吉 · 喜庆", text: "速喜喜临门，求财向南行。失物午未间，逢人路上寻。" },
+            "赤口": { badge: "凶 · 纷争", text: "赤口主口舌，官非切宜防。失物急去寻，行人有惊慌。" },
+            "小吉": { badge: "吉 · 顺利", text: "小吉最吉昌，路上好商量。阴人来报喜，失物在坤方。" },
+            "空亡": { badge: "谨慎 · 虚无", text: "空亡事不祥，阴人多乖张。求财无利益，行人有灾殃。" }
+        };
+
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + " : " + 
+                            now.getMinutes().toString().padStart(2, '0') + " : " + 
+                            now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('currentTime').innerText = timeStr;
+        }
+
+        function init() {
+            const date = new Date();
+            const lunar = Lunar.fromDate(date);
+            document.getElementById('lunarInfo').innerText = `— ${lunar.getYearInGanZhi()}年 ${lunar.getMonthInChinese()}月${lunar.getDayInChinese()} —`;
+            
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            const mSelect = document.getElementById('month');
+            const dSelect = document.getElementById('day');
+            const hSelect = document.getElementById('hour');
+            
+            for(let i=1; i<=12; i++) mSelect.options.add(new Option(i + '月', i));
+            for(let i=1; i<=30; i++) dSelect.options.add(new Option(chineseNums[i], i));
+            shichen.forEach((s, i) => hSelect.options.add(new Option(s, i + 1)));
+
+            document.getElementById('year').value = 2025;
+            mSelect.value = lunar.getMonth();
+            dSelect.value = lunar.getDay();
+            const hour = date.getHours();
+            let hIdx = Math.floor((hour + 1) % 24 / 2);
+            hSelect.value = hIdx + 1;
+        }
+
+        function startDivination() {
+            const m = parseInt(document.getElementById('month').value);
+            const d = parseInt(document.getElementById('day').value);
+            const h = parseInt(document.getElementById('hour').value);
+
+            let mIdx = (m - 1) % 6;
+            let dIdx = (mIdx + d - 1) % 6;
+            let hIdx = (dIdx + h - 1) % 6;
+            let hResult = gods[hIdx];
+
+            document.getElementById('resultArea').classList.remove('hidden');
+            document.getElementById('finalResultName').innerText = hResult;
+            document.getElementById('finalBadge').innerText = infoMap[hResult].badge;
+            document.getElementById('interpretation').innerText = infoMap[hResult].text;
+
+            const steps = [
+                { label: '月', to: gods[mIdx] },
+                { label: '日', to: gods[dIdx] },
+                { label: '时', to: hResult }
+            ];
+
+            document.getElementById('processSteps').innerHTML = steps.map(s => `
+                <div class="flex flex-col items-center">
+                    <span class="text-[10px] text-zinc-400 uppercase font-bold mb-1">${s.label}</span>
+                    <span class="step-val">${s.to}</span>
+                </div>
+            `).join('<div class="h-6 w-[1px] bg-slate-100"></div>');
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
